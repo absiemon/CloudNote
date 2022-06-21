@@ -5,6 +5,9 @@ const User  = require('../models/User');
 const { body, validationResult } = require('express-validator');  // express validator use to validate user details that he want to send to the database.
 
 const bcrypt = require('bcryptjs'); // importing the bcryptjs to use its functionlity of hashing, salting etc.
+ 
+var jwt = require('jsonwebtoken');  // importing jwt to use its functionlity
+const JWT_SECRET = 'abshaddpadk';
 
 // creating the user using post '/api/auth/'
 router.post('/', [
@@ -40,7 +43,18 @@ router.post('/', [
                 password: secPassword,
             })
 
-            res.json(user); // for printing res of the user
+            // res.json(user); // sending the user in response
+
+            // prevsly we are sending the user in response now we will send the webtoken to made a secure conntion
+            const data = {
+                user:{
+                    id: user.id,
+                }
+            }
+            const authtoken = jwt.sign(data, JWT_SECRET);
+            console.log(authtoken);
+
+            res.json({authtoken})
         } 
         catch(error){
             console.error(error.message);
