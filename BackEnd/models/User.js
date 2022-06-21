@@ -22,4 +22,6 @@ const UserSchema = new Schema({
     },
 });
 
-module.exports = mongoose.model('user', UserSchema);  
+const User = mongoose.model('user', UserSchema); 
+User.createIndexes();    //used for unique entry in the database
+module.exports =  User;
