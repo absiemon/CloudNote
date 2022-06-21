@@ -4,6 +4,8 @@ const User  = require('../models/User');
 
 const { body, validationResult } = require('express-validator');  // express validator use to validate user details that he want to send to the database.
 
+const bcrypt = require('bcryptjs'); // importing the bcryptjs to use its functionlity of hashing, salting etc.
+
 // creating the user using post '/api/auth/'
 router.post('/', [
     // express validator work
@@ -25,10 +27,17 @@ router.post('/', [
             if(user){
                 return res.status(400).json({ error: 'sorry a user with that email already exists'});
             }
+
+            //before storing the password in the database we encrypt it using bcryptjs
+            const salt = await bcrypt.genSalt(10);  // generating the random salt. untill and unless this process //doesn't completed we won't move further thats why we have made it await.
+
+            const secPassword = await bcrypt.hash(req.body.password, salt); // adding the salt in the password and converting it into the hash.
+
+            //Creating the user into the db.
             user = await User.create({
                 name: req.body.name,
                 email: req.body.email,
-                password: req.body.password,
+                password: secPassword,
             })
 
             res.json(user); // for printing res of the user
