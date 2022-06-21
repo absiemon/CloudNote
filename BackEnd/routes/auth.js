@@ -10,7 +10,7 @@ var jwt = require('jsonwebtoken');  // importing jwt to use its functionlity
 const JWT_SECRET = 'abshaddpadk';
 
 // creating the user using post '/api/auth/'
-router.post('/', [
+router.post('/createuser', [
     // express validator work
     // name must be at least 5 chars long
     body('name', 'Enter the valid name').isLength({ min: 3 }),
@@ -51,8 +51,7 @@ router.post('/', [
                     id: user.id,
                 }
             }
-            const authtoken = jwt.sign(data, JWT_SECRET);
-            console.log(authtoken);
+            const authtoken = jwt.sign(data, JWT_SECRET);  // sign is sync func
 
             res.json({authtoken})
         } 
@@ -65,5 +64,54 @@ router.post('/', [
     // user.save();   // saving the user into the database
     // res.send(req.body); 
 })
+
+// Authenticate user using : post "/api/auth/login"
+router.post('/login', [
+    // express validator work
+    body('email', 'Enter the valid email address').isEmail(),
+    body('password', 'password cannot be blank').exists(),
+],
+    async (req, res)=>{
+
+        // checking if any error occured then send the error in json object. error json has msg prop.
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+          return res.status(400).json({ errors: errors.array() });
+        }
+
+        // object destructuring for getting the email and password from the req.body object. otherwise we can also use req.body.email
+        const {email, password} = req.body;
+
+        try {
+             // looking for the user in db with given details
+             let user = await User.findOne({email})
+
+             if(!user){
+                return res.status(400).json({error: "Soory cannot login! please try loginin with correct credential"});
+             }
+             // if user exiests comapre the given password with the user.password
+
+             const passwordCompare  = await bcrypt.compare(password, user.password);
+             if(!passwordCompare){
+                return res.status(400).json({error: "Soory cannot login ! please try loginin with correct credential"});
+
+             }
+             // if password correct then create a webtoken and login the user
+             const data = {
+                user:{
+                    id: user.id,
+                }
+            }
+            const authtoken = jwt.sign(data, JWT_SECRET);
+
+            res.json({authtoken})
+        } 
+        catch(error){
+            console.error(error.message);
+            res.status(500).send("some error occured");
+        }
+        
+    }
+)
 
 module.exports = router
