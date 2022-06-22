@@ -7,9 +7,12 @@ const { body, validationResult } = require('express-validator');  // express val
 const bcrypt = require('bcryptjs'); // importing the bcryptjs to use its functionlity of hashing, salting etc.
  
 var jwt = require('jsonwebtoken');  // importing jwt to use its functionlity
+
+var fetchuser = require('../middleware/fetchUser');
+
 const JWT_SECRET = 'abshaddpadk';
 
-// creating the user using post '/api/auth/'
+// ROUTE 1:creating the user using post '/api/auth/'
 router.post('/createuser', [
     // express validator work
     // name must be at least 5 chars long
@@ -65,7 +68,7 @@ router.post('/createuser', [
     // res.send(req.body); 
 })
 
-// Authenticate user using : post "/api/auth/login"
+// ROUTE 2: Authenticate user using : post "/api/auth/login"
 router.post('/login', [
     // express validator work
     body('email', 'Enter the valid email address').isEmail(),
@@ -111,7 +114,28 @@ router.post('/login', [
             res.status(500).send("some error occured");
         }
         
-    }
+     }
 )
+
+// ROUTE 3: Gettng the Authenticated(logged in user details) user details : post "/api/auth/getuser"
+// Once user logged in and now he want to se its profile then he will make a request to /api/auth/getuser a
+// long with the authtoken to the server and server will decode the authtoken and finds the uder id within the decoded authtoken. 
+// after getting the user id server finds the details in the database with that user id. we will using a middleware to find the id.
+// this middleware runs before the controller (req, res) 
+ 
+router.post('/getuser', fetchuser, async (req, res) => {
+
+    try {
+        
+        userId = req.user.id // getting the userid from the req that has been come from the middleware
+        console.log(userId);
+        const user = await User.findById(userId).select("-password") // we dont want to show the password with details. select Specifies which document fields to include or exclude
+        res.send(user)
+    } 
+    catch(error){
+        console.error(error.message);
+        res.status(500).send("some error occured");
+    }
+})
 
 module.exports = router
