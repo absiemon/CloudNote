@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react'
 import noteContext from '../contexts/notes/noteContext'
 
-export const AddNote = () => {
+export const AddNote = (props) => {
     
     const context = useContext(noteContext);
     const { addNote} = context;
@@ -14,7 +14,8 @@ export const AddNote = () => {
 
         
         //after adding the note blank the input field
-        setNote({ title: " ", description: " ", tag: " "})
+        setNote({ title: " ", description: " ", tag: " "});
+        props.showAlert("Notes added successfully", "success");
     }
 
     // on onChange works whenever we write in the input fields

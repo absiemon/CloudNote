@@ -22,16 +22,18 @@ router.post('/createuser', [
 ],
     async (req, res)=>{
         // checking if any error occured then send the error in json object. error json has msg prop.
+        let success = false;
+
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-          return res.status(400).json({ errors: errors.array() });
+          return res.status(400).json({ success, errors: errors.array() });
         }
         // try catch is like if and else statement for catching the errors
         try{
         // checking the user with the given email already exists
             let user = await User.findOne({ email: req.body.email});
             if(user){
-                return res.status(400).json({ error: 'sorry a user with that email already exists'});
+                return res.status(400).json({ success, error: 'sorry a user with that email already exists'});
             }
 
             //before storing the password in the database we encrypt it using bcryptjs
@@ -55,8 +57,8 @@ router.post('/createuser', [
                 }
             }
             const authtoken = jwt.sign(data, JWT_SECRET);  // sign is sync func
-
-            res.json({authtoken})
+            success = true;
+            res.json({success, authtoken})
         } 
         catch(error){
             console.error(error.message);

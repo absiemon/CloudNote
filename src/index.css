@@ -15,3 +15,9 @@ code {
 i{
   cursor: pointer;
 }
+
+#my-alert{
+  position: absolute;
+  width: 100%;
+
+}

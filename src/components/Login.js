@@ -1,7 +1,7 @@
 import React, {useState}from 'react'
 import {useNavigate} from 'react-router-dom';
 
-export const Login = () => {
+export const Login = (props) => {
 
     const [credentials, setCredentials] = useState({email:"", password:""})
 
@@ -27,9 +27,11 @@ export const Login = () => {
 
             localStorage.setItem('token', json.authtoken);  //saving the authtoken in the local storage.
             navigate('/')
+           props.showAlert("User Logged in successfully", "success");
+
         }
         else{
-            alert("invalid crede")
+            props.showAlert("invalid credentials", "danger");
         }
     }
     // on onChange works whenever we write in the input fields

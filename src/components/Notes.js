@@ -4,7 +4,7 @@ import noteContext from '../contexts/notes/noteContext'
 import { NoteItem } from './NoteItem';
 import { AddNote } from './AddNote';
 
-export const Notes = () => {
+export const Notes = (props) => {
 
     const context = useContext(noteContext);
     const { notes, getNotes , editNote} = context;
@@ -24,10 +24,11 @@ export const Notes = () => {
         setNote(currentNote);
     }
 
-    const handleClick = ()=>{
+    const saveUpdatedNote = ()=>{
         editNote(note._id, note.title, note.description, note.tag)
         refClose.current.click();
-
+        props.showAlert("Note updated successfully", "success");
+        
     }
     // on onChange works whenever we write in the input fields
     const onChange = (e)=>{
@@ -36,7 +37,7 @@ export const Notes = () => {
     }
     return (
         <>
-            <AddNote />
+            <AddNote showAlert={props.showAlert}/>
             <button type="button" ref={ref} className="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 Launch demo modal
             </button>
@@ -66,7 +67,7 @@ export const Notes = () => {
                         </div>
                         <div className="modal-footer">
                             <button ref ={refClose} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" className="btn btn-primary" onClick={handleClick}>Save changes</button>
+                            <button type="button" className="btn btn-primary" onClick={saveUpdatedNote}>Save changes</button>
                         </div>
                     </div>
                 </div>
@@ -78,7 +79,7 @@ export const Notes = () => {
                 </div>
                 {/* showing up all the notes of the user */}
                 {notes.map((note) => {
-                    return <NoteItem key={note._id} updateNote={updateNote} note={note} />
+                    return <NoteItem key={note._id} updateNote={updateNote} note={note} showAlert={props.showAlert}/>
                 })}
             </div>
         </>
