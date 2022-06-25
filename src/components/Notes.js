@@ -3,16 +3,24 @@ import { useContext, useEffect, useRef, useState} from 'react';  // with the hel
 import noteContext from '../contexts/notes/noteContext'
 import { NoteItem } from './NoteItem';
 import { AddNote } from './AddNote';
+import {useNavigate} from 'react-router-dom';
 
 export const Notes = (props) => {
 
     const context = useContext(noteContext);
     const { notes, getNotes , editNote} = context;
+    let navigate = useNavigate();
 
     useEffect(() => {
-        getNotes();
+        // if token is not null
+        if(localStorage.getItem('token')){
+            getNotes();
+        }
+        else{
+            navigate('/login')
+        }
 
-    }, [])
+    }, [getNotes, navigate])
 
     const ref = useRef(null)  // using use ref
     const refClose = useRef(null);  // this ref refers to close, we are making bcz when we click on update note we want to close the modal.

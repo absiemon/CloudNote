@@ -20,14 +20,13 @@ export const Login = (props) => {
             body: JSON.stringify({ email:credentials.email, password:credentials.password })
         });
         const json = await response.json();
-        console.log(json)
 
         if(json.success){
             // redirects
 
             localStorage.setItem('token', json.authtoken);  //saving the authtoken in the local storage.
+            props.showAlert("User Logged in successfully", "success");
             navigate('/')
-           props.showAlert("User Logged in successfully", "success");
 
         }
         else{
@@ -40,7 +39,8 @@ export const Login = (props) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value }); // setting the state using spread operator(jo bhi vlaue iss note object ke andar hain wo rahe lekin jo properties uske aaage likhi ja rahi hain usse inko add ya override kar dena)
     }
     return (
-        <div className="container">
+        <div className="container mt-5">
+            <h1> Login to go to the iNotebook</h1>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label htmlFor="email" className="form-label">Email address</label>
