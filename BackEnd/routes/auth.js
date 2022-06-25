@@ -75,7 +75,8 @@ router.post('/login', [
     body('password', 'password cannot be blank').exists(),
 ],
     async (req, res)=>{
-
+        
+        let success = false;
         // checking if any error occured then send the error in json object. error json has msg prop.
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -90,13 +91,13 @@ router.post('/login', [
              let user = await User.findOne({email})
 
              if(!user){
-                return res.status(400).json({error: "Soory cannot login! please try loginin with correct credential"});
+                return res.status(400).json({success, error: "Soory cannot login! please try loginin with correct credential"});
              }
              // if user exiests comapre the given password with the user.password
 
              const passwordCompare  = await bcrypt.compare(password, user.password);
              if(!passwordCompare){
-                return res.status(400).json({error: "Soory cannot login ! please try loginin with correct credential"});
+                return res.status(400).json({success, error: "Soory cannot login ! please try loginin with correct credential"});
 
              }
              // if password correct then create a webtoken and login the user
@@ -106,8 +107,8 @@ router.post('/login', [
                 }
             }
             const authtoken = jwt.sign(data, JWT_SECRET);
-
-            res.json({authtoken})
+            success = true;
+            res.json({success, authtoken})
         } 
         catch(error){
             console.error(error.message);

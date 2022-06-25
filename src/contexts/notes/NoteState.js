@@ -24,7 +24,6 @@ const NoteState = (props)=>{
       }
     });
     const json = await response.json();
-    console.log(json)
     setNotes(json)
   }
 
@@ -43,25 +42,25 @@ const NoteState = (props)=>{
       body: JSON.stringify({title, description, tag}) // body data type must match "Content-Type" header
     });
 
-    console.log("Added a note");
-    const note = {
-      "_id": "62b538ff73622017353a593b",
-      "user": "62b1a7df2bbfe5090782f47c",
-      "title": title,
-      "description": description,
-      "tag": tag,
-      "date": "2022-06-24T04:09:35.640Z",
-      "__v": 0
-    }
+    const note = await response.json();
     setNotes(notes.concat(note));   //push the note in the notes array and update the state setNotes; notes.concat returns a new array.
   }
 
   //----Delete a Note-----
   const deleteNote = async (id)=>{
 
+    const response = await fetch(`${host}/api/notes/delete/${id}`, {
+      method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
 
-    console.log("deleting the note with id "+ id);
-    const newNote = notes.filter((note) =>{ return note._id !== id});
+      headers: {
+        'Content-Type': 'application/json',
+        'auth-token' : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjJiMWE3ZGYyYmJmZTUwOTA3ODJmNDdjIn0sImlhdCI6MTY1NTg3NTM5NX0.E2-gsAVa3IaL8PDg1VO0lU-8PC1pDrAa1TYb45fGd-s'
+
+      },
+    });
+    // const json =  response.json(); 
+    // console.log(json);    
+    const newNote = await notes.filter((note) =>{ return note._id !== id});
     setNotes(newNote);  
   }
   
@@ -69,9 +68,8 @@ const NoteState = (props)=>{
   const editNote = async (id , title, description, tag)=>{
 
         //API call to our own server
-    
     const response = await fetch(`${host}/api/notes/update/${id}`, {
-      method: 'POST', // *GET, POST, PUT, DELETE, etc.
+      method: 'PUT', // *GET, POST, PUT, DELETE, etc.
 
       headers: {
         'Content-Type': 'application/json',
@@ -80,18 +78,22 @@ const NoteState = (props)=>{
       },
       body: JSON.stringify({title, description, tag}) // body data type must match "Content-Type" header
     });
-    const json =  response.json(); 
+    const json =  await response.json(); 
     
+    let newNotes = JSON.parse(JSON.stringify(notes));   // updating the state by making a newNote
     //logic to edit a note
-    for(let index =0; index< notes.index; index++){
-      const element = notes[index]
+    for(let index =0; index< newNotes.length; index++){
+
+      const element = newNotes[index];
       if(element._id ===id){
 
-        element.title = title;
-        element.description = description;
-        element.tag = tag;
+        newNotes[index].title = title;
+        newNotes[index].description = description;
+        newNotes[index].tag = tag;
+        break;
       }
     }
+    setNotes(newNotes );
   }
 
     return(

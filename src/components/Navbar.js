@@ -8,7 +8,7 @@ const Navbar = ()=>{
 
     let location = useLocation();  //location will be an object and it has the property pathname
     useEffect(() =>{
-        console.log(location.pathname, "comming from navbar")
+
     }, [location])
     return(
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -27,8 +27,9 @@ const Navbar = ()=>{
               </li>
             </ul>
             <form className="d-flex">
-              <input className="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-              <button className="btn btn-outline-success" type="submit">Search</button>
+              <Link className="btn btn-primary mx-2" to ="/login" role="button">Login</Link>
+              <Link className="btn btn-primary mx-2" to ="/signup" role="button">SignUp</Link>
+
             </form>
           </div>
         </div>

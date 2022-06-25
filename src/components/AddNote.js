@@ -6,11 +6,15 @@ export const AddNote = () => {
     const context = useContext(noteContext);
     const { addNote} = context;
 
-    const [note, setNote] = useState({title: " ", description: " ", tag: "default "});
+    const [note, setNote] = useState({title: " ", description: " ", tag: " "});
 
     const handleClick =(e)=>{
         e.preventDefault();
         addNote(note.title, note.description, note.tag);
+
+        
+        //after adding the note blank the input field
+        setNote({ title: " ", description: " ", tag: " "})
     }
 
     // on onChange works whenever we write in the input fields
@@ -25,15 +29,15 @@ export const AddNote = () => {
     <form>
         <div className="form-group">
             <label htmlFor="exampleInputEmail1">title</label>
-            <input type="text" className="form-control" id="title" name = "title" aria-describedby="emailHelp" placeholder="Enter title"  onChange={onChange}/>
+            <input type="text" className="form-control" id="title" name = "title" aria-describedby="emailHelp" placeholder="Enter title"  onChange={onChange} value={note.title}/>
         </div>
         <div className="form-group">
             <label htmlFor="exampleInputPassword1">description</label>
-            <input type="text" className="form-control" id="description" placeholder="description" name ="description" onChange={onChange}/>
+            <input type="text" className="form-control" id="description" placeholder="description" name ="description" onChange={onChange} value={note.description}/>
         </div>
-        <div className="form-group form-check">
-            <input type="checkbox" className="form-check-input" id="exampleCheck1"/>
-            <label className="form-check-label" htmlFor="exampleCheck1">Check me out</label>
+        <div className="form-group">
+            <label htmlFor="tag">tag</label>
+            <input type="text" className="form-control" id="tag" placeholder="tag" name ="tag" onChange={onChange} value={note.tag}/>
         </div>
         <button type="submit" className="btn btn-primary" onClick={handleClick}>Add Note</button>
     </form>
