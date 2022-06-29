@@ -1,5 +1,5 @@
 import React, {useState}from 'react'
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, Link} from 'react-router-dom';
 
 export const Login = (props) => {
 
@@ -20,7 +20,7 @@ export const Login = (props) => {
             body: JSON.stringify({ email:credentials.email, password:credentials.password })
         });
         const json = await response.json();
-
+        console.log(json)
         if(json.success){
             // redirects
 
@@ -51,7 +51,9 @@ export const Login = (props) => {
                     <input type="password" className="form-control" name="password" id="password" value={credentials.password} onChange={onChange}/>
                 </div>
 
-                <button type="submit" className="btn btn-primary" >Submit</button>
+                <button type="submit" className="btn btn-primary" >Login</button>
+                <Link className="btn btn-primary mx-2" to ="/signup" role="button">SignUp</Link>
+                
             </form>
         </div>
     )

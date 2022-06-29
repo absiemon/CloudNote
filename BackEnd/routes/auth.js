@@ -19,6 +19,8 @@ router.post('/createuser', [
     body('name', 'Enter the valid name').isLength({ min: 3 }),
     body('email', 'Enter the valid email address').isEmail(),
     body('password', 'password must be atleast 5 characters long').isLength({ min: 5 }),
+    body('phone', 'phone number must be atleast 10 characters long').isLength({ min: 10 }),
+    body('address', 'Enter the valid Address').isLength({ min: 5 }),
 ],
     async (req, res)=>{
         // checking if any error occured then send the error in json object. error json has msg prop.
@@ -46,6 +48,9 @@ router.post('/createuser', [
                 name: req.body.name,
                 email: req.body.email,
                 password: secPassword,
+                phone: req.body.phone,
+                address: req.body.address,
+
             })
 
             // res.json(user); // sending the user in response

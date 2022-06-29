@@ -6,7 +6,7 @@ const NoteState = (props)=>{
 
   const host = "http://localhost:2000"  // host may be variable
 
-    const notesinitial  = [ ];
+  const notesinitial  = [ ];
 
   //using useState hook to set state
   const [notes, setNotes] = useState(notesinitial);

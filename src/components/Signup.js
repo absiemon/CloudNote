@@ -1,16 +1,16 @@
 import React, {useState} from 'react'
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, Link} from 'react-router-dom';
 
 
 export const Signup = (props) => {
 
-    const [credentials, setCredentials] = useState({name:"", email:"", password:"", cpassword:""})
+    const [credentials, setCredentials] = useState({name:"", email:"", password:"", cpassword:"", phone:"", address:"",})
     let navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const {name, email, password, cpassword} = credentials;
+        const {name, email, password, cpassword, phone, address} = credentials;
         //API call
         const response = await fetch("http://localhost:2000/api/auth/createuser", {
             
@@ -20,7 +20,7 @@ export const Signup = (props) => {
                 'Content-Type': 'application/json',
 
             },
-            body: JSON.stringify({ name, email, password })
+            body: JSON.stringify({ name, email, password, phone, address })
         });
         const json = await response.json();
 
@@ -44,7 +44,7 @@ export const Signup = (props) => {
         <div className= "container mt-5" >
             <h1> Create an account to go to the iNotebook</h1>
             <form onSubmit={handleSubmit}>
-            <div className="mb-3">
+                <div className="mb-3">
                     <label htmlFor="name" className="form-label">Name</label>
                     <input type="text" className="form-control" id="name" name ="name"aria-describedby="emailHelp" onChange={onChange}/>
                 </div>
@@ -61,7 +61,17 @@ export const Signup = (props) => {
                     <label htmlFor="password" className="form-label">Confirm Password</label>
                     <input type="password" className="form-control" id="cpassword" name="cpassword" onChange={onChange}  required />
                 </div>
-                <button type="submit" className="btn btn-primary">Submit</button>
+                <div className="mb-3">
+                    <label htmlFor="phone" className="form-label">Phone Number</label>
+                    <input type="text" className="form-control" id="phone" name ="phone" aria-describedby="emailHelp" onChange={onChange}/>
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="address" className="form-label">Address</label>
+                    <input type="text" className="form-control" id="address" name ="address"aria-describedby="emailHelp" onChange={onChange} placeholder="City, State"/>
+                </div>
+                <button type="submit" className="btn btn-primary">Sign up</button>
+               <Link className="btn btn-primary mx-2" to ="/login" role="button">Login</Link>
+
             </form>
         </div>
     )
