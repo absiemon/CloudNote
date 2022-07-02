@@ -132,6 +132,7 @@ router.post('/login', [
 // this middleware runs before the controller (req, res) 
  
 router.post('/getuser', fetchuser, async (req, res) => {
+    
 
     try {
         
@@ -146,4 +147,37 @@ router.post('/getuser', fetchuser, async (req, res) => {
     }
 })
 
+// ROUTE 4 : Updating the details of the user(logged in user) : put "/api/auth/updateuser"
+router.put('/updateuser', fetchuser, async (req, res)=>{
+
+    let success = false;
+
+    try{
+
+        const {name, email, phone, address} = req.body; 
+        const newUser = {};
+
+        if(name){ newUser.name = name} ;
+        if(email){ newUser.email = email} ;
+        if(phone){ newUser.phone = phone} ;
+        if(address){ newUser.address = address} ;
+
+        userId = req.user.id // getting the userid from the req that has been come from the middleware
+        let user = await User.findById(userId);
+        
+        if(!user){
+           return res.status(404).send({ message: "User is Not found" });
+
+        }
+        // if everythig is fine then update the user
+        user = await User.findByIdAndUpdate( userId, {$set: newUser}, {new: true});
+        success = true;
+        res.json({success, user});
+
+    }
+    catch(error){
+        console.error(error.message);
+        res.status(500).send("Internal Server error try after some time ");
+    }
+})
 module.exports = router
